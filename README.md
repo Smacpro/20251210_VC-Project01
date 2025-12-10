@@ -2,6 +2,12 @@
 
 Ein intelligentes Empfehlungssystem für die Integration in die Website www.medien-bayern.de, das Medienschaffenden hilft, passende Veranstaltungen, Förderprogramme und Publikationen zu finden.
 
+## 🚀 Live Demo
+
+**Demo-URL:** `https://smacpro.github.io/20251210_VC-Project01/`
+
+Das System ist auf GitHub Pages deployed und kann sofort getestet werden!
+
 ## 🎯 Projektübersicht
 
 Dieses System wurde entwickelt, um Medienschaffende in Bayern – von Einsteigern über Quereinsteiger bis hin zu Professionals – bei der Vernetzung, Weiterbildung und Entwicklung ihrer Geschäftsideen zu unterstützen.
@@ -17,11 +23,13 @@ Dieses System wurde entwickelt, um Medienschaffende in Bayern – von Einsteiger
 
 ## 📋 Inhaltsverzeichnis
 
+- [Live Demo](#-live-demo)
 - [Features](#-features)
 - [Technologie-Stack](#-technologie-stack)
 - [Installation](#-installation)
 - [Verwendung](#-verwendung)
 - [Integration](#-integration-in-bestehende-website)
+- [Deployment](#-deployment)
 - [Datenstruktur](#-datenstruktur)
 - [Anpassung](#-anpassung)
 - [Browser-Kompatibilität](#-browser-kompatibilität)
@@ -319,6 +327,37 @@ Das System aggregiert Inhalte von folgenden Quellen:
 - [Start into Media](https://www.startintomedia.de/)
 - [Medientage München](https://medientage.de/)
 
+## 🚀 Deployment
+
+### GitHub Pages (Automatisch)
+
+Das Projekt ist für automatisches Deployment auf GitHub Pages konfiguriert.
+
+**Live Demo:** `https://smacpro.github.io/20251210_VC-Project01/`
+
+#### Setup
+
+1. **GitHub Pages aktivieren**
+   - Gehen Sie zu Repository Settings → Pages
+   - Source: **GitHub Actions**
+
+2. **Automatisches Deployment**
+   - Bei jedem Push wird automatisch deployed
+   - Oder manuell über den Actions Tab
+
+3. **Ihre Seite ist live!**
+   ```
+   https://<username>.github.io/20251210_VC-Project01/
+   ```
+
+Detaillierte Anleitung: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Alternative Deployment-Optionen
+
+- **Netlify**: [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start)
+- **Vercel**: `npx vercel`
+- **Eigener Server**: Dateien hochladen und fertig!
+
 ## 🚧 Erweiterungsmöglichkeiten
 
 ### Backend-Integration
@@ -358,8 +397,10 @@ Bei Fragen oder Problemen:
 
 ## 📚 Weitere Dokumentation
 
+- [QUICKSTART.md](QUICKSTART.md) - 5-Minuten Quick-Start Guide
 - [INTEGRATION.md](INTEGRATION.md) - Detaillierte Integrations-Anleitung
-- [API.md](API.md) - API-Dokumentation (für Backend-Integration)
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment-Anleitung (GitHub Pages, Netlify, etc.)
+- [CHANGELOG.md](CHANGELOG.md) - Versions-Historie und Roadmap
 
 ---
 
