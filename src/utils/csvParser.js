@@ -46,62 +46,90 @@ export async function parseMediaBayernCSV(file) {
 }
 
 /**
- * Load CSV from public folder
+ * Load CSV from public folder - tries multiple paths
  */
 export async function loadCSVFromRepo() {
-  try {
-    const response = await fetch('/20251210_VC-Project01/offers.csv');
-    if (!response.ok) throw new Error('CSV not found');
+  // Try multiple paths for robustness
+  const paths = [
+    './offers.csv',
+    'offers.csv',
+    '/offers.csv',
+    '/20251210_VC-Project01/offers.csv',
+    import.meta.env.BASE_URL + 'offers.csv',
+  ];
 
-    const text = await response.text();
+  for (const path of paths) {
+    try {
+      console.log(`[CSV Loader] Trying path: ${path}`);
+      const response = await fetch(path);
 
-    return new Promise((resolve, reject) => {
-      Papa.parse(text, {
-        header: true,
-        skipEmptyLines: true,
-        encoding: 'UTF-8',
-        complete: (results) => {
-          try {
-            const offers = results.data
-              .map((row, index) => {
-                const initiative = row.Initiative || '';
-                const categories = parseKategorie(row['Interesse/ Kategorie'] || '');
-                const type = determineType(categories);
+      if (!response.ok) {
+        console.log(`[CSV Loader] Path ${path} returned ${response.status}`);
+        continue;
+      }
 
-                return {
-                  id: index + 1,
-                  type: type,
-                  title: row['Name Angebot'] || '',
-                  description: cleanDescription(row['Um was geht´s?'] || ''),
-                  date: determineDateFromType(type),
-                  location: determineLocation(row['Um was geht´s?'] || '', categories),
-                  city: extractCity(row['Um was geht´s?'] || ''),
-                  cost: determineCost(row['Um was geht´s?'] || ''),
-                  tags: extractTags(row),
-                  source: mapInitiativeToSource(initiative),
-                  url: extractURL(row['Merchartikel, Infoblatt, Websitelink?'] || ''),
-                  personas: determinePersonas(row['Branche'] || '', categories),
-                  categories: [type, ...categories.slice(0, 2)].filter((c, i, a) => a.indexOf(c) === i),
-                };
-              })
-              .filter((offer) => offer.title && offer.url !== '#');
+      const text = await response.text();
+      console.log(`[CSV Loader] ✓ Successfully loaded CSV from: ${path} (${text.length} bytes)`);
 
-            resolve(offers);
-          } catch (error) {
+      return new Promise((resolve, reject) => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          encoding: 'UTF-8',
+          complete: (results) => {
+            try {
+              const offers = results.data
+                .map((row, index) => {
+                  const initiative = row.Initiative || '';
+                  const categories = parseKategorie(row['Interesse/ Kategorie'] || '');
+                  const type = determineType(categories);
+
+                  return {
+                    id: index + 1,
+                    type: type,
+                    title: row['Name Angebot'] || '',
+                    description: cleanDescription(row['Um was geht´s?'] || ''),
+                    date: determineDateFromType(type),
+                    location: determineLocation(row['Um was geht´s?'] || '', categories),
+                    city: extractCity(row['Um was geht´s?'] || ''),
+                    cost: determineCost(row['Um was geht´s?'] || ''),
+                    tags: extractTags(row),
+                    source: mapInitiativeToSource(initiative),
+                    url: extractURL(row['Merchartikel, Infoblatt, Websitelink?'] || ''),
+                    personas: determinePersonas(row['Branche'] || '', categories),
+                    categories: [type, ...categories.slice(0, 2)].filter((c, i, a) => a.indexOf(c) === i),
+                  };
+                })
+                .filter((offer) => offer.title && offer.url !== '#');
+
+              console.log(`[CSV Loader] ✓ Parsed ${offers.length} offers`);
+              resolve(offers);
+            } catch (error) {
+              console.error('[CSV Loader] Parse error:', error);
+              reject(error);
+            }
+          },
+          error: (error) => {
+            console.error('[CSV Loader] PapaParse error:', error);
             reject(error);
-          }
-        },
-        error: reject,
+          },
+        });
       });
-    });
-  } catch (error) {
-    console.error('Failed to load CSV:', error);
-    return [];
+    } catch (error) {
+      console.error(`[CSV Loader] Failed to load from ${path}:`, error.message);
+      continue;
+    }
   }
+
+  // If all paths failed
+  console.error('[CSV Loader] ✗ Failed to load CSV from all attempted paths');
+  console.log('[CSV Loader] Attempted paths:', paths);
+  return [];
 }
 
 // Helper functions
 function cleanDescription(text) {
+  if (!text) return '';
   return text.replace(/\n{3,}/g, '\n\n').replace(/•\s*/g, '• ').trim().slice(0, 250);
 }
 
@@ -175,6 +203,7 @@ function mapInitiativeToSource(init) {
 }
 
 function extractURL(text) {
+  if (!text) return '#';
   const match = text.match(/https?:\/\/[^\s,]+/);
   return match ? match[0].trim() : '#';
 }
