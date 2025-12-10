@@ -11,19 +11,36 @@ function App() {
   const [offers, setOffers] = useState(sampleOffers);
   const [showCSVUpload, setShowCSVUpload] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [dataSource, setDataSource] = useState('loading');
+  const [debugInfo, setDebugInfo] = useState([]);
   const recommendationRef = useRef(null);
 
   // Load real CSV data on mount
   useEffect(() => {
+    const debugLog = [];
+    debugLog.push('Starting CSV load...');
+    setDebugInfo([...debugLog]);
+
     loadCSVFromRepo()
       .then((data) => {
         if (data && data.length > 0) {
-          console.log(`Loaded ${data.length} offers from CSV`);
+          console.log(`✓ Loaded ${data.length} offers from CSV`);
+          debugLog.push(`✓ CSV loaded successfully: ${data.length} offers`);
           setOffers(data);
+          setDataSource('csv');
+        } else {
+          console.log('CSV returned empty, using sample data');
+          debugLog.push('⚠ CSV returned no data, using sample offers');
+          setDataSource('sample');
         }
+        setDebugInfo([...debugLog]);
       })
       .catch((error) => {
         console.error('Failed to load CSV, using sample data:', error);
+        debugLog.push(`✗ CSV loading failed: ${error.message}`);
+        debugLog.push('Using sample data as fallback');
+        setDataSource('sample');
+        setDebugInfo([...debugLog]);
       })
       .finally(() => {
         setLoading(false);
@@ -46,6 +63,43 @@ function App() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
+
+      {/* Debug Info Banner */}
+      {(loading || dataSource !== 'csv') && (
+        <div className={`px-4 py-3 ${dataSource === 'sample' ? 'bg-yellow-50 border-b-2 border-yellow-400' : 'bg-blue-50 border-b-2 border-blue-400'}`}>
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">
+                {loading ? '⏳' : dataSource === 'csv' ? '✓' : '⚠️'}
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm">
+                  {loading && 'Lade CSV-Daten...'}
+                  {!loading && dataSource === 'csv' && `CSV-Daten geladen (${offers.length} Angebote)`}
+                  {!loading && dataSource === 'sample' && 'CSV konnte nicht geladen werden - Beispieldaten werden angezeigt'}
+                </p>
+                {debugInfo.length > 0 && (
+                  <details className="mt-2">
+                    <summary className="text-xs cursor-pointer text-gray-600 hover:text-black">
+                      Debug-Informationen anzeigen
+                    </summary>
+                    <div className="mt-2 text-xs font-mono bg-white p-3 rounded border border-gray-200">
+                      {debugInfo.map((info, i) => (
+                        <div key={i} className="mb-1">{info}</div>
+                      ))}
+                      <div className="mt-2 pt-2 border-t border-gray-200">
+                        <div>BASE_URL: {import.meta.env.BASE_URL}</div>
+                        <div>Mode: {import.meta.env.MODE}</div>
+                        <div>Offers count: {offers.length}</div>
+                      </div>
+                    </div>
+                  </details>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main>
