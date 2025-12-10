@@ -1,15 +1,34 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import RecommendationSystem from './components/RecommendationSystem';
 import CSVUpload from './components/CSVUpload';
 import Footer from './components/Footer';
 import { sampleOffers } from './data/sampleOffers';
+import { loadCSVFromRepo } from './utils/csvParser';
 
 function App() {
   const [offers, setOffers] = useState(sampleOffers);
   const [showCSVUpload, setShowCSVUpload] = useState(false);
+  const [loading, setLoading] = useState(true);
   const recommendationRef = useRef(null);
+
+  // Load real CSV data on mount
+  useEffect(() => {
+    loadCSVFromRepo()
+      .then((data) => {
+        if (data && data.length > 0) {
+          console.log(`Loaded ${data.length} offers from CSV`);
+          setOffers(data);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load CSV, using sample data:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const handleDataLoaded = (newOffers) => {
     setOffers(newOffers);

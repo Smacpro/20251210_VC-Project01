@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medien Bayern - Empfehlungssystem</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>Empfehlungssystem für Medienschaffende</h1>
+                <p class="subtitle">Finde passende Veranstaltungen, Förderprogramme und Publikationen</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Persona Selection -->
+            <section class="persona-section">
+                <h2>Wer sind Sie?</h2>
+                <p class="section-description">Wählen Sie das Profil, das am besten zu Ihnen passt (optional)</p>
+                <div class="persona-grid">
+                    <button class="persona-card" data-persona="einsteiger">
+                        <div class="persona-icon">🎓</div>
+                        <h3>Einsteiger</h3>
+                        <p>Neu in der Medienbranche</p>
+                    </button>
+                    <button class="persona-card" data-persona="quereinsteiger">
+                        <div class="persona-icon">🔄</div>
+                        <h3>Quereinsteiger</h3>
+                        <p>Aus einer anderen Branche</p>
+                    </button>
+                    <button class="persona-card" data-persona="professional">
+                        <div class="persona-icon">💼</div>
+                        <h3>Professional</h3>
+                        <p>Erfahrener Medienschaffender</p>
+                    </button>
+                    <button class="persona-card" data-persona="gruender">
+                        <div class="persona-icon">🚀</div>
+                        <h3>Gründer</h3>
+                        <p>Unternehmer im Medienbereich</p>
+                    </button>
+                    <button class="persona-card" data-persona="student">
+                        <div class="persona-icon">📚</div>
+                        <h3>Student</h3>
+                        <p>In Ausbildung oder Studium</p>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <h2>Was suchen Sie?</h2>
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Suchbegriff eingeben (z.B. 'Film', 'Förderung', 'KI')..."
+                        autocomplete="off"
+                    >
+                    <button class="search-button" id="searchButton">
+                        <span class="search-icon">🔍</span> Suchen
+                    </button>
+                </div>
+            </section>
+
+            <!-- Category Filters -->
+            <section class="filter-section">
+                <h3>Kategorien</h3>
+                <div class="filter-group category-filters">
+                    <button class="filter-chip" data-category="alle">Alle</button>
+                    <button class="filter-chip" data-category="veranstaltung">Veranstaltungen</button>
+                    <button class="filter-chip" data-category="foerderung">Förderprogramme</button>
+                    <button class="filter-chip" data-category="publikation">Publikationen</button>
+                    <button class="filter-chip" data-category="weiterbildung">Weiterbildung</button>
+                    <button class="filter-chip" data-category="netzwerk">Netzwerk</button>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="advanced-filters">
+                    <details class="filter-accordion">
+                        <summary>Erweiterte Filter</summary>
+                        <div class="filter-content">
+                            <!-- Location Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Veranstaltungsort</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="location" value="vor-ort" checked>
+                                        <span>Vor Ort</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="location" value="online" checked>
+                                        <span>Online</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="location" value="hybrid" checked>
+                                        <span>Hybrid</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Cost Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Kosten</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="cost" value="kostenlos" checked>
+                                        <span>Kostenlos</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="cost" value="kostenpflichtig" checked>
+                                        <span>Kostenpflichtig</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Time Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">Zeitraum</label>
+                                <div class="time-filter">
+                                    <select id="timeFilter" class="time-select">
+                                        <option value="alle">Alle</option>
+                                        <option value="naechste-woche">Nächste Woche</option>
+                                        <option value="naechster-monat" selected>Nächster Monat</option>
+                                        <option value="naechste-3-monate">Nächste 3 Monate</option>
+                                        <option value="custom">Benutzerdefiniert</option>
+                                    </select>
+                                    <div id="customDateRange" class="custom-date-range" style="display: none;">
+                                        <input type="date" id="startDate" class="date-input">
+                                        <span>bis</span>
+                                        <input type="date" id="endDate" class="date-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <button class="reset-button" id="resetFilters">Filter zurücksetzen</button>
+            </section>
+
+            <!-- Results Counter -->
+            <div class="results-info">
+                <span id="resultsCount">0 Ergebnisse gefunden</span>
+                <span id="activeFilters" class="active-filters"></span>
+            </div>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection">
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results will be inserted here dynamically -->
+                </div>
+                <div class="no-results" id="noResults" style="display: none;">
+                    <div class="no-results-icon">🔍</div>
+                    <h3>Keine Ergebnisse gefunden</h3>
+                    <p>Versuchen Sie, Ihre Suchkriterien anzupassen oder Filter zu ändern.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Medien Bayern. Alle Rechte vorbehalten.</p>
+        </footer>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
