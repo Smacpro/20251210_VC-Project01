@@ -60,19 +60,21 @@ export default function OfferCard({ offer }) {
           {offer.description}
         </p>
 
-        {/* Meta Information */}
-        <div className="flex flex-wrap gap-3 text-sm text-primary-gray-500 pt-3 border-t border-primary-gray-100">
-          <div className="flex items-center gap-1">
-            <span>📅</span>
-            <span>{formatDate(offer.date)}</span>
-          </div>
-          {offer.location && (
+        {/* Meta Information - Only for events */}
+        {offer.type === 'veranstaltung' && (
+          <div className="flex flex-wrap gap-3 text-sm text-primary-gray-500 pt-3 border-t border-primary-gray-100">
             <div className="flex items-center gap-1">
-              <span>{locationIcons[offer.location] || '📍'}</span>
-              <span>{offer.city || offer.location}</span>
+              <span>📅</span>
+              <span>{formatDate(offer.date)}</span>
             </div>
-          )}
-        </div>
+            {offer.location && (
+              <div className="flex items-center gap-1">
+                <span>{locationIcons[offer.location] || '📍'}</span>
+                <span>{offer.city || offer.location}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Tags */}
         {offer.tags && offer.tags.length > 0 && (
