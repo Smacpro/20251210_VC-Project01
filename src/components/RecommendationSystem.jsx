@@ -11,7 +11,7 @@ export default function RecommendationSystem({ offers }) {
   const [selectedCategories, setSelectedCategories] = useState(['alle']);
   const [selectedLocations, setSelectedLocations] = useState(['vor-ort', 'online', 'hybrid']);
   const [selectedCosts, setSelectedCosts] = useState(['kostenlos', 'kostenpflichtig']);
-  const [timeRange, setTimeRange] = useState('naechster-monat');
+  const [timeRange, setTimeRange] = useState('alle'); // Changed from 'naechster-monat' to 'alle'
   const [customDateRange, setCustomDateRange] = useState({ start: null, end: null });
   const [filteredResults, setFilteredResults] = useState(offers);
 
@@ -43,7 +43,7 @@ export default function RecommendationSystem({ offers }) {
     setSelectedCategories(['alle']);
     setSelectedLocations(['vor-ort', 'online', 'hybrid']);
     setSelectedCosts(['kostenlos', 'kostenpflichtig']);
-    setTimeRange('naechster-monat');
+    setTimeRange('alle'); // Changed from 'naechster-monat' to 'alle'
     setCustomDateRange({ start: null, end: null });
   };
 
