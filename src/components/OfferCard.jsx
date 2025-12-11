@@ -91,27 +91,33 @@ export default function OfferCard({ offer }) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-primary-gray-100">
           <span className="text-xs text-primary-gray-400">{offer.source}</span>
-          <a
-            href={offer.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-semibold uppercase tracking-wide hover:underline flex items-center gap-1"
-          >
-            Mehr erfahren
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {offer.url && offer.url !== '#' ? (
+            <a
+              href={offer.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold uppercase tracking-wide hover:underline flex items-center gap-1"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </a>
+              Mehr erfahren
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </a>
+          ) : (
+            <span className="text-xs text-primary-gray-400 italic">
+              Keine Website verfügbar
+            </span>
+          )}
         </div>
       </div>
     </article>

@@ -78,31 +78,34 @@ export async function loadCSVFromRepo() {
           encoding: 'UTF-8',
           complete: (results) => {
             try {
-              const offers = results.data
-                .map((row, index) => {
-                  const initiative = row.Initiative || '';
-                  const categories = parseKategorie(row['Interesse/ Kategorie'] || '');
-                  const type = determineType(categories);
+              const allOffers = results.data.map((row, index) => {
+                const initiative = row.Initiative || '';
+                const categories = parseKategorie(row['Interesse/ Kategorie'] || '');
+                const type = determineType(categories);
 
-                  return {
-                    id: index + 1,
-                    type: type,
-                    title: row['Name Angebot'] || '',
-                    description: cleanDescription(row['Um was geht´s?'] || ''),
-                    date: determineDateFromType(type),
-                    location: determineLocation(row['Um was geht´s?'] || '', categories),
-                    city: extractCity(row['Um was geht´s?'] || ''),
-                    cost: determineCost(row['Um was geht´s?'] || ''),
-                    tags: extractTags(row),
-                    source: mapInitiativeToSource(initiative),
-                    url: extractURL(row['Merchartikel, Infoblatt, Websitelink?'] || ''),
-                    personas: determinePersonas(row['Branche'] || '', categories),
-                    categories: [type, ...categories.slice(0, 2)].filter((c, i, a) => a.indexOf(c) === i),
-                  };
-                })
-                .filter((offer) => offer.title && offer.url !== '#');
+                return {
+                  id: index + 1,
+                  type: type,
+                  title: row['Name Angebot'] || '',
+                  description: cleanDescription(row['Um was geht´s?'] || ''),
+                  date: determineDateFromType(type),
+                  location: determineLocation(row['Um was geht´s?'] || '', categories),
+                  city: extractCity(row['Um was geht´s?'] || ''),
+                  cost: determineCost(row['Um was geht´s?'] || ''),
+                  tags: extractTags(row),
+                  source: mapInitiativeToSource(initiative),
+                  url: extractURL(row['Merchartikel, Infoblatt, Websitelink?'] || ''),
+                  personas: determinePersonas(row['Branche'] || '', categories),
+                  categories: [type, ...categories.slice(0, 2)].filter((c, i, a) => a.indexOf(c) === i),
+                };
+              });
 
-              console.log(`[CSV Loader] ✓ Parsed ${offers.length} offers`);
+              // Only filter out offers without titles (keep offers without URLs)
+              const offers = allOffers.filter((offer) => offer.title && offer.title.trim().length > 0);
+
+              console.log(`[CSV Loader] ✓ Parsed ${offers.length} offers from ${results.data.length} rows`);
+              console.log(`[CSV Loader] Offers with URLs: ${offers.filter(o => o.url !== '#').length}`);
+              console.log(`[CSV Loader] Offers without URLs: ${offers.filter(o => o.url === '#').length}`);
               resolve(offers);
             } catch (error) {
               console.error('[CSV Loader] Parse error:', error);
